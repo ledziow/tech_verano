@@ -70,11 +70,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._id = device["id"]
         self._udid = device["udid"]
         self._ver = device["version"]
-        #self.update_properties()
 
-        #self._available = True
-        #self._current_fan_mode = FAN_AUTO # default optimistic state
-        #self._current_operation = HVACMode.OFF  # default optimistic state
         self._attr_hvac_action = HVACAction.IDLE
         self._target_temp = 21
         self._attr_target_temperature_high = None
@@ -99,8 +95,8 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                 if (hvac_state_data := module_data[53]) is not None:
                     for i in hvac_state_data:
                         if "Heating" in i:
-                            #self._attr_hvac_action = HVACAction.HEATING
-                            self._attr_hvac_mode = HVACMode.AUTO
+                            self._attr_hvac_action = HVACAction.HEATING
+                            #self._attr_hvac_mode = HVACMode.HEAT
                             break
                         elif "Cooling" in i:
                             #self._attr_hvac_action = HVACAction.COOLING
