@@ -35,17 +35,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     http_session = aiohttp_client.async_get_clientsession(hass)
     hass.data[DOMAIN][entry.entry_id] = TECH_VERANO(http_session, entry.data["user_id"], entry.data["token"])
-    
-    for component in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, PLATFORMS)
-        )
+    hass.config_entries.async_forward_entry_setups(entry,PLATFORMS)
 
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
+    
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
 
