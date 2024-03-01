@@ -93,14 +93,14 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                 # HVAC Mode
                 _LOGGER.debug(f"Object module_data: {module_data}")
                 if (hvac_state_data := module_data[53]) is not None:
-                    self._state = HVACMode.OFF
+                    self.state = HVACMode.OFF
                     for i in hvac_state_data:
                         _LOGGER.debug(f"Object i: {i}")
                         if "Heating" in i:
-                            self._state = HVACMode.HEAT
+                            self.state = HVACMode.HEAT
                             break
                         elif "Cooling" in i:
-                            self._state = HVACMode.COOL
+                            self.state = HVACMode.COOL
                             break
                 # Current Temp       
                 if (current_temp_data := module_data.get(58)) is not None:
@@ -150,7 +150,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
         Need to be one of CURRENT_HVAC_*.
         """
-        return self._state
+        return self.state
 
     async def async_update(self):
         """Call by the Tech device callback to update state."""
