@@ -24,7 +24,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Tech Verano from a config entry."""
 
     _LOGGER.debug("Setting up component's entry.")
-    _LOGGER.debug("Entry -> title: " + entry.title + ", data: " + str(entry.data) + ", id: " + entry.entry_id + ", domain: " + entry.domain + ", entry: " + entry)
+    _LOGGER.debug("Entry -> title: " + entry.title + ", data: " + str(entry.data) + ", id: " + entry.entry_id + ", domain: " + entry.domain + ", entry: " + str(entry))
     
 
     hass.data.setdefault(DOMAIN, {})
