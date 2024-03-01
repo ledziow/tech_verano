@@ -70,7 +70,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._id = device["id"]
         self._udid = device["udid"]
         self._ver = device["version"]
-        self.update_properties()
+        #self.update_properties()
 
         self._available = True
         self._current_temp = None
@@ -80,14 +80,12 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._target_temp = 21  # default optimistic state
 
 
-    def update_properties(self):
+    def update_properties(self, module_data):
         """ Upadate device properties.
         """
 
         try:
             _LOGGER.info("Update Tech-Verano Thermostat data started ...")
-
-            module_data = self._api.get_module_tiles(self._udid)
             
             if module_data:
                 # HVAC Mode
@@ -155,8 +153,9 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         
         _LOGGER.debug("Updating Tech zone: %s, udid: %s, id: %s", self._name, self._udid, self._id)
 
-        #device = await self._api.get_zone(self._config_entry.data["udid"], self._id)
-        self.update_properties()
+        module_data = await self._api.get_module_tiles(self._udid)
+        #await self._api.get_zone(self._config_entry.data["udid"], self._id)
+        self.update_properties(module_data)
 
     @property
     def temperature_unit(self):
@@ -173,8 +172,10 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         """Return the temperature we try to reach."""
         return self._target_temp
 
-    async def async_set_temperature(self, **kwargs):
+    async def async_set_temperature(self, temp):
         """Set new target temperatures."""
+
+        _LOGGER.debug("%s: Setting temp to %s", self._name, temp)
         """ temperature = kwargs.get(ATTR_TEMPERATURE)
         if temperature:
             _LOGGER.debug("%s: Setting temperature to %s", self._name, temperature)
@@ -183,6 +184,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
+
         _LOGGER.debug("%s: Setting hvac mode to %s", self._name, hvac_mode)
         """ if hvac_mode == HVAC_MODE_OFF:
             await self._api.set_zone(self._config_entry.data["udid"], self._id, False)
