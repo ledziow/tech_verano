@@ -100,7 +100,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                     for i in hvac_state_data:
                         if "Heating" in i:
                             #self._attr_hvac_action = HVACAction.HEATING
-                            self._attr_hvac_mode = HVACMode.HEAT
+                            self._attr_hvac_mode = HVACMode.AUTO
                             break
                         elif "Cooling" in i:
                             #self._attr_hvac_action = HVACAction.COOLING
