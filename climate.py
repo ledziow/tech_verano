@@ -80,7 +80,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._target_temp = 21  # default optimistic state
 
 
-    async def update_properties(self, device):
+    async def update_properties(self):
         """ Upadate device properties.
         """
 
@@ -152,9 +152,11 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
     async def async_update(self):
         """Call by the Tech device callback to update state."""
-        _LOGGER.debug("Updating Tech zone: %s, udid: %s, id: %s", self._name, self._config_entry.data["udid"], self._id)
-        device = await self._api.get_zone(self._config_entry.data["udid"], self._id)
-        self.update_properties(device)
+        
+        _LOGGER.debug("Updating Tech zone: %s, udid: %s, id: %s", self._name, self._udid, self._id)
+
+        #device = await self._api.get_zone(self._config_entry.data["udid"], self._id)
+        await self.update_properties()
 
     @property
     def temperature_unit(self):
