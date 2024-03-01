@@ -72,7 +72,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._ver = device["version"]
         #self.update_properties()
 
-        self._available = True
+        #self._available = True
         #self._current_fan_mode = FAN_AUTO # default optimistic state
         #self._current_operation = HVACMode.OFF  # default optimistic state
         self._attr_hvac_action = HVACAction.IDLE
@@ -205,12 +205,13 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         return self._target_temp
     
 
-    async def async_set_temperature(self, temperature):
+    async def async_set_temperature(self, **kwargs):
         """Set new target temperatures."""
-
+        temperature = kwargs.get(ATTR_TEMPERATURE)
         _LOGGER.debug("%s [%s] : Setting temp to %s", self._name, self._id, temperature)
         if temperature:
             self._target_temp = temperature
+            self._temperature = temperature
             await self._api.set_const_temp(self._udid, self._id, temperature)
 
 
