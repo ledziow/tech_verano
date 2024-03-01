@@ -78,8 +78,8 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._current_fan_mode = FAN_AUTO # default optimistic state
         self._current_operation = HVACMode.OFF  # default optimistic state
         self._target_temp = 21  # default optimistic state
-        self._attr_target_temperature_high = None
-        self._attr_target_temperature_low = None
+        self._attr_target_temperature_high = 25
+        self._attr_target_temperature_low = 9
 
 
     def update_properties(self, module_data):
@@ -95,7 +95,6 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                 if (hvac_state_data := module_data[53]) is not None:
                     self._current_operation = HVACMode.OFF
                     for i in hvac_state_data:
-                        _LOGGER.debug(f"Object i: {i}")
                         if "Heating" in i:
                             self._current_operation = HVACMode.HEAT
                             break
@@ -103,12 +102,14 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                             self._current_operation = HVACMode.COOL
                             break
                 # Current Temp       
-                if (current_temp_data := module_data.get(58)) is not None:
-                    for i in current_temp_data:
+                if (temp_data := module_data.get(58)) is not None:
+                    for i in temp_data:
                         if "Current temperature" in i:
                             self._current_temp = i[1]
-                            break
-
+                            continue
+                        if "Set temp" in i:
+                            self._target_temp = i[1]
+                            continue
 
             else:
                 _LOGGER.debug("No module data, No updates.")
