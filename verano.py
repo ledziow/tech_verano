@@ -106,6 +106,8 @@ class TECH_VERANO:
         """ Authetication
         """
 
+        await self.language_strings()
+
         path = "frontend/login"
         post_data = {
             "username": username,
@@ -290,7 +292,6 @@ class TECH_VERANO:
                 _LOGGER.debug(f"Updating module {module_udid} tiles cache ...")    
                 result = await self.get_module_data(module_udid)
                 tiles = result["tiles"]
-                print()
 
                 temp_tiles = {}
                 if tiles:

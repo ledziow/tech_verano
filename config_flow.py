@@ -62,7 +62,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 info = await validate_input(self.hass, user_input)
-                return self.async_create_entry(title=info["version"], data=info)
+                return self.async_create_entry(title="Tech - VERANO", data=info)
             except CannotConnect:
                 errors["base"] = "cannot_connect"
             except InvalidAuth:
