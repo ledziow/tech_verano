@@ -89,9 +89,11 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
             
             if module_data:
                 # HVAC Mode
-                if (hvac_state_data := module_data.get(53)) is not None:
+                _LOGGER.debug(f"Object module_data: {module_data}")
+                if (hvac_state_data := module_data[53]) is not None:
                     self._state = HVACMode.OFF
                     for i in hvac_state_data:
+                        _LOGGER.debug(f"Object i: {i}")
                         if "Heating" in i:
                             self._state = HVACMode.HEAT
                             break
@@ -106,7 +108,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                             break
 
         except Exception as e:
-            _LOGGER.error("Update Tech-Verano Thermostat data failed.")
+            _LOGGER.error(f"Update Tech-Verano Thermostat data failed. ERROR: {str(e)}")
 
 
     @property
