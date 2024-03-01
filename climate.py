@@ -43,7 +43,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     async_add_entities(
         [
-            await TECHVERANOThermostat(
+            TECHVERANOThermostat(
                 device,
                 api,
                 config_entry,
@@ -58,7 +58,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
     """Representation of a Tech-Verano climate."""
 
 
-    async def __init__(self, device, api, config):
+    def __init__(self, device, api, config):
         """Initialize the Tech-Verano device."""
 
         _LOGGER.debug("Init Tech-Verano Thermostat...")
@@ -70,7 +70,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._id = device["id"]
         self._udid = device["udid"]
         self._ver = device["version"]
-        await self.update_properties()
+        self.update_properties()
 
         self._available = True
         self._current_temp = None
@@ -80,14 +80,14 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._target_temp = 21  # default optimistic state
 
 
-    async def update_properties(self):
+    def update_properties(self):
         """ Upadate device properties.
         """
 
         try:
             _LOGGER.info("Update Tech-Verano Thermostat data started ...")
 
-            module_data = await self._api.get_module_tiles(self._udid)
+            module_data = self._api.get_module_tiles(self._udid)
             
             if module_data:
                 # HVAC Mode
@@ -156,7 +156,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         _LOGGER.debug("Updating Tech zone: %s, udid: %s, id: %s", self._name, self._udid, self._id)
 
         #device = await self._api.get_zone(self._config_entry.data["udid"], self._id)
-        await self.update_properties()
+        self.update_properties()
 
     @property
     def temperature_unit(self):
