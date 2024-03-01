@@ -150,7 +150,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
         Need to be one of HVAC_MODE_*.
         """
-        return self._current_operation
+        return self._attr_hvac_mode
 
     @property
     def hvac_modes(self):
@@ -166,7 +166,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
         Need to be one of CURRENT_HVAC_*.
         """
-        return self.state
+        return self._attr_hvac_action
 
     async def async_update(self):
         """Call by the Tech device callback to update state."""
