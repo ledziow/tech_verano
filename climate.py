@@ -70,7 +70,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._id = device["id"]
         self._udid = device["udid"]
         self._ver = device["version"]
-        self.update_properties(device)
+        self.update_properties()
 
         self._available = True
         self._current_temp = None
