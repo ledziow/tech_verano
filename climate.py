@@ -78,6 +78,8 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._current_fan_mode = FAN_AUTO # default optimistic state
         self._current_operation = HVACMode.OFF  # default optimistic state
         self._target_temp = 21  # default optimistic state
+        self._attr_target_temperature_high = None
+        self._attr_target_temperature_low = None
 
 
     def update_properties(self, module_data):
