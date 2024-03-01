@@ -35,7 +35,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     http_session = aiohttp_client.async_get_clientsession(hass)
     hass.data[DOMAIN][entry.entry_id] = TECH_VERANO(http_session, entry.data["user_id"], entry.data["token"])
-    hass.config_entries.async_forward_entry_setups(entry,PLATFORMS)
+    await hass.config_entries.async_forward_entry_setups(entry,PLATFORMS)
 
     return True
 
