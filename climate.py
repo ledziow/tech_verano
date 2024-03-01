@@ -40,10 +40,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     api = hass.data[DOMAIN][config_entry.entry_id]
     devices = await api.list_modules()
-    async_add_entities(
+
+    await async_add_entities(
         [
             TECHVERANOThermostat(
-                devices[device],
+                device,
                 api,
                 config_entry,
             )
