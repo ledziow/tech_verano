@@ -74,7 +74,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._attr_hvac_action = HVACAction.IDLE
         self._target_temp = 21
         self._current_temp = None
-        self._attr_target_temperature_high = 30
+        self._attr_target_temperature_high = None
         self._attr_target_temperature_low = 5
         self._attr_min_temp = 5
         self._attr_hvac_mode = HVACMode.AUTO
