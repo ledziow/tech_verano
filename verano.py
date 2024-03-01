@@ -338,7 +338,7 @@ class TECH_VERANO:
                 self.last_update = now
                 self.tiles = temp_tiles
 
-        return temp_tiles
+        return self.tiles
     
     
     async def get_zone(self, module_udid, zone_id):
