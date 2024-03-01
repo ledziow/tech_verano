@@ -63,7 +63,8 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
         _LOGGER.debug("Init Tech-Verano Thermostat...")
         self._config = config
-        self._attr_unique_id = config.get("udid", None)
+        #self._attr_unique_id = config.data["udid"]
+        self._attr_unique_id = config.entry_id
         self._api = api
         self._name = device["name"]
         self._id = device["id"]
