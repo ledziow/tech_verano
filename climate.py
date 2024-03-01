@@ -115,7 +115,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                             self._current_temp = i[1]
                             _LOGGER.debug(f"Set current_temp: {i[1]}")
                             continue
-                        if "Set temp" in i:
+                        if "Set temp." in i:
                             self._target_temp = i[1]
                             _LOGGER.debug(f"Set target_temp: {i[1]}")
                             continue
