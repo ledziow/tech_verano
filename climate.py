@@ -78,12 +78,14 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         #self._current_fan_mode = FAN_AUTO # default optimistic state
         #self._current_operation = HVACMode.OFF  # default optimistic state
         self._attr_hvac_action = HVACAction.IDLE
-        self._attr_hvac_mode = HVACMode.OFF
         self._target_temp = 21  # default optimistic state
         self._attr_target_temperature_high = None
         self._attr_target_temperature_low = None
-        self._attr_max_temp = 25
-        self._attr_min_temp = 9
+        self._attr_min_temp = 5
+        self._attr_hvac_mode = HVACMode.AUTO
+        self._attr_max_temp = 30
+        self._attr_target_temperature_step = 0.1
+        self._attr_temperature_unit = UnitOfTemperature.CELSIUS
 
 
     def update_properties(self, module_data):
@@ -161,7 +163,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
         Need to be a subset of HVAC_MODES.
         """
-        return [HVACAction.OFF,HVACAction.COOLING,HVACAction.HEATING]
+        return [HVACAction.COOLING,HVACAction.HEATING]
 
     @property
     def hvac_action(self) -> Optional[str]:
@@ -194,16 +196,16 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
     def target_temperature(self):
         """Return the temperature we try to reach."""
         return self._target_temp
+    
 
-    async def async_set_temperature(self, temp):
+    async def async_set_temperature(self, temperature):
         """Set new target temperatures."""
 
-        _LOGGER.debug("%s: Setting temp to %s", self._name, temp)
-        """ temperature = kwargs.get(ATTR_TEMPERATURE)
+        _LOGGER.debug("%s [%s] : Setting temp to %s", self._name, self._id, temperature)
         if temperature:
-            _LOGGER.debug("%s: Setting temperature to %s", self._name, temperature)
-            self._temperature = temperature
-            await self._api.set_const_temp(self._config_entry.data["udid"], self._id, temperature) """
+            self._target_temp = temperature
+            await self._api.set_const_temp(self._udid, self._id, temperature)
+
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
