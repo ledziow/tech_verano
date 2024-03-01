@@ -73,8 +73,6 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         #self.update_properties()
 
         self._available = True
-        self._current_temp = None
-
         #self._current_fan_mode = FAN_AUTO # default optimistic state
         #self._current_operation = HVACMode.OFF  # default optimistic state
         self._attr_hvac_action = HVACAction.IDLE
@@ -115,13 +113,15 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                     for i in temp_data:
                         if "Current temperature" in i:
                             self._current_temp = i[1]
+                            _LOGGER.debug(f"Set current_temp: {i[1]}")
                             continue
                         if "Set temp" in i:
                             self._target_temp = i[1]
+                            _LOGGER.debug(f"Set target_temp: {i[1]}")
                             continue
                 # Fan speed        
-                if (temp_data := module_data.get(63)) is not None:
-                    for i in temp_data:
+                if (fan_mode_data := module_data.get(63)) is not None:
+                    for i in fan_mode_data:
                         if "Mode" in i:
                             if "Automatic mode" in i[1]:
                                 self._current_fan_mode = FAN_AUTO
