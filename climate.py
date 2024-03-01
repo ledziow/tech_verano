@@ -93,14 +93,14 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                 # HVAC Mode
                 _LOGGER.debug(f"Object module_data: {module_data}")
                 if (hvac_state_data := module_data[53]) is not None:
-                    self.state = HVACMode.OFF
+                    self._current_operation = HVACMode.OFF
                     for i in hvac_state_data:
                         _LOGGER.debug(f"Object i: {i}")
                         if "Heating" in i:
-                            self.state = HVACMode.HEAT
+                            self._current_operation = HVACMode.HEAT
                             break
                         elif "Cooling" in i:
-                            self.state = HVACMode.COOL
+                            self._current_operation = HVACMode.COOL
                             break
                 # Current Temp       
                 if (current_temp_data := module_data.get(58)) is not None:
