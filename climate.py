@@ -109,6 +109,10 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                             self._current_temp = i[1]
                             break
 
+
+            else:
+                _LOGGER.debug("No module data, No updates.")
+
         except Exception as e:
             _LOGGER.error(f"Update Tech-Verano Thermostat data failed. ERROR: {str(e)}")
 
@@ -155,7 +159,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
     async def async_update(self):
         """Call by the Tech device callback to update state."""
         
-        _LOGGER.debug("Updating Tech zone: %s, udid: %s, id: %s", self._name, self._udid, self._id)
+        _LOGGER.debug("Updating Tech VERANO: %s, udid: %s, id: %s", self._name, self._udid, self._id)
 
         module_data = await self._api.get_module_tiles(self._udid)
         #await self._api.get_zone(self._config_entry.data["udid"], self._id)
