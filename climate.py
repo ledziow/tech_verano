@@ -96,7 +96,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                     for i in hvac_state_data:
                         if "Heating" in i:
                             self._attr_hvac_action = HVACAction.HEATING
-                            #self._attr_hvac_mode = HVACMode.HEAT
+                            self._attr_hvac_mode = HVACMode.HEAT
                             break
                         elif "Cooling" in i:
                             #self._attr_hvac_action = HVACAction.COOLING
@@ -112,6 +112,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                         if "Set temp." in i:
                             self._attr_target_temperature = i[1]
                             self._temperature = i[1]
+                            self.target_temperature = i[1]
                             _LOGGER.debug(f"Set target_temp: {i[1]}")
                             continue
                 # Fan speed        
