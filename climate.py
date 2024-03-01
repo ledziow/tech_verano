@@ -76,7 +76,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         #self._current_fan_mode = FAN_AUTO # default optimistic state
         #self._current_operation = HVACMode.OFF  # default optimistic state
         self._attr_hvac_action = HVACAction.IDLE
-        self._attr_target_temperature = 21
+        self._target_temp = 21
         self._attr_target_temperature_high = None
         self._attr_target_temperature_low = None
         self._attr_min_temp = 5
@@ -125,6 +125,15 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                         if "Mode" in i:
                             if "Automatic mode" in i[1]:
                                 self._current_fan_mode = FAN_AUTO
+                            continue
+
+                if (fan_data := module_data.get(62)) is not None:
+                    for i in fan_data:
+                        if "Fan 0-10 V (F)" in i:
+                            if i[1] == 0:
+                                self._attr_hvac_action = HVACAction.IDLE
+                            else:
+                                self._attr_hvac_action = HVACAction.HEATING
                             continue
 
             else:
