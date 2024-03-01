@@ -41,7 +41,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     api = hass.data[DOMAIN][config_entry.entry_id]
     devices = await api.list_modules()
 
-    await async_add_entities(
+    async_add_entities(
         [
             TECHVERANOThermostat(
                 device,
@@ -58,7 +58,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
     """Representation of a Tech-Verano climate."""
 
 
-    def __init__(self, device, api, config):
+    async def __init__(self, device, api, config):
         """Initialize the Tech-Verano device."""
 
         _LOGGER.debug("Init Tech-Verano Thermostat...")
@@ -70,7 +70,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._id = device["id"]
         self._udid = device["udid"]
         self._ver = device["version"]
-        self.update_properties()
+        await self.update_properties()
 
         self._available = True
         self._current_temp = None
