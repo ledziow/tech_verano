@@ -132,7 +132,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
         Need to be one of HVAC_MODE_*.
         """
-        return self._mode
+        return self._current_operation
 
     @property
     def hvac_modes(self):
@@ -166,12 +166,12 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
     @property
     def current_temperature(self):
         """Return the current temperature."""
-        return self._temperature
+        return self._current_temp
 
     @property
     def target_temperature(self):
         """Return the temperature we try to reach."""
-        return self._target_temperature
+        return self._target_temp
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperatures."""
