@@ -113,7 +113,6 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                         if "Set temp." in i:
                             self._attr_target_temperature = i[1]
                             self._temperature = i[1]
-                            self.target_temperature = i[1]
                             _LOGGER.debug(f"Set target_temp: {i[1]}")
                             continue
                 # Fan speed        
@@ -209,7 +208,6 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         temperature = kwargs.get(ATTR_TEMPERATURE)
         _LOGGER.debug("%s [%s] : Setting temp to %s", self._name, self._id, temperature)
         if temperature:
-            self.target_temperature = temperature
             self._temperature = temperature
             await self._api.set_const_temp(self._udid, self._id, temperature)
 
