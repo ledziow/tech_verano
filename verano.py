@@ -100,7 +100,7 @@ class TECH_VERANO:
         
         _LOGGER.debug("Updating cookies for Tech API ...")
         for k in response.raw_headers:
-            encoding = detect(k)['encoding']
+            encoding = detect(k[1])['encoding']
             _LOGGER.debug(f"Cookies encoding: {str(encoding)}")
             if "Set-Cookie" in k[0].decode():
                 if (set_session := k[1].decode("utf-8").replace("session=","")) is  not None:
