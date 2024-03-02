@@ -64,8 +64,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     TECH_VERANO_OBJ = hass.data[DOMAIN][config_entry.entry_id]
     devices = await TECH_VERANO_OBJ.list_modules()
 
-    _LOGGER.debug("TECH_VERANO_OBJ: " + str(TECH_VERANO_OBJ.session))
-
     async_add_entities(
         [
             TECHVERANOThermostat(

@@ -23,7 +23,6 @@ class TECH_VERANO:
         self.headers = {
             'Accept': 'application/json, text/plain, */*',
             'Accept-Encoding': 'gzip, deflate, br, zstd',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
         }
 
         self.base_url = base_url
@@ -70,18 +69,16 @@ class TECH_VERANO:
             return data
         
     
-    async def tech_post(self, request_path: str, post_data: str, headers: dict, fronted: bool=False):
+    async def tech_post(self, request_path: str, post_data: str, headers: dict):
         """ A wrapper for POST request
         """
         
-        if fronted:
-            url = self.web_url + request_path
-        else:
-            url = self.base_url + request_path
+        url = self.base_url + request_path
 
         _LOGGER.debug("Sending POST request to Tech API: " + url)
 
         async with self.session.post(url, data=post_data, headers=headers) as response:
+            _LOGGER.debug("Tech API POST request data: %s", str(post_data))
             _LOGGER.debug("Tech API POST request headers: %s", str(response.request_info.headers))
             _LOGGER.debug("Tech API POST response headers: %s", str(response.headers))
             if response.status != 200:
@@ -385,12 +382,11 @@ class TECH_VERANO:
                 "Referer": f"https://emodul.eu/web/{module_udid}/control",
                 "Content-Type": "application/json",
                 "Accept": "application/json, text/plain, */*",
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
                 'Authorization': f"Bearer {self.token}"
             }
             _LOGGER.debug(f"Setting constant temperature {target_temp}")
             try:
-                result = await self.tech_post(request_path=path, post_data=json.dumps(data), headers=headers, fronted=False)
+                result = await self.tech_post(request_path=path, post_data=json.dumps(data), headers=headers)
                 _LOGGER.debug(f"Setting constant temperature successed, results: {result}")
             except Exception as e:
                 _LOGGER.error(f"Setting constant temperature failed. Error: {e}")
