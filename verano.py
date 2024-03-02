@@ -94,7 +94,7 @@ class TECH_VERANO:
             return data
         
     
-    async def update_cookies(self, response: aiohttp.ClientResponse):
+    """ async def update_cookies(self, response: aiohttp.ClientResponse):
         
         _LOGGER.debug("Updating cookies for Tech API ...")
         for k in response.raw_headers:
@@ -104,7 +104,39 @@ class TECH_VERANO:
                     _LOGGER.debug(f"Cookie: {set_session}")
                     self.session.cookie_jar.update_cookies({"session": set_session})
                     _LOGGER.debug("Cookies for Tech API were updated!")
-                    break
+                    break """
+
+    
+    async def update_cookies(self, response: aiohttp.ClientResponse):
+        
+        from http.cookies import SimpleCookie
+
+        cookie_set = SimpleCookie()
+        _LOGGER.debug("Updating cookies for Tech API ...")
+        
+        try:
+            for k in response.raw_headers:
+                if "Set-Cookie" in k[0].decode():
+                    cookie_elements = [x.strip() for x in k[1].decode("utf-8").split(';')]
+                    print(cookie_elements)
+                    c_row = [x.strip() for x in cookie_elements[0].split('=')]
+                    cookie_set[c_row[0]] = c_row[1]
+
+                    for i in cookie_elements:
+                        if '=' in i:
+                            c = [x.strip() for x in i.split('=')]
+                            if len(c) == 2 and c[0] != c_row[0]:
+                                cookie_set[c_row[0]][c[0]] = c[1]
+                    cookie_set[c_row[0]]['HttpOnly'] = True
+                    cookie_set[c_row[0]]['secure'] = True
+
+                    if len(cookie_set) > 0:
+                        self.session.cookie_jar.update_cookies(cookie_set)
+                        _LOGGER.debug("Cookies for Tech API were updated!")
+                        break
+
+        except Exception as e:
+            _LOGGER.error(f"Parsing 'Set-cookies' cookie for Tech API failed, Error: {e}")
 
 
     async def authenticate(self, username: str, password: str):
