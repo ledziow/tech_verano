@@ -89,6 +89,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._attr_max_temp = 30
         self._attr_target_temperature_step = 0.1
         self._attr_temperature_unit = UnitOfTemperature.CELSIUS
+        self._attr_fan_modes = FAN_AUTO
 
 
     def update_properties(self, module_data):
