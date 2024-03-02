@@ -102,7 +102,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._current_temp = None
         self._attr_target_temperature_high = 22
         self._attr_target_temperature_low = 18
-        self._attr_min_temp = 5
+        self._attr_min_temp = 7
         self._attr_max_temp = 30
         self._attr_target_temperature_step = 0.1
         self._attr_temperature_unit = UnitOfTemperature.CELSIUS
@@ -125,11 +125,10 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                     for i in hvac_state_data:
                         if "Heating" in i:
                             self._attr_hvac_action = HVACAction.HEATING
-                            self._attr_hvac_mode = HVACMode.HEAT
                             break
                         elif "Cooling" in i:
                             #self._attr_hvac_action = HVACAction.COOLING
-                            self._attr_hvac_mode = HVACMode.COOL
+                            self._attr_hvac_action = HVACAction.COOLING
                             break
                 # Current Temp       
                 if (temp_data := module_data.get(58)) is not None:
