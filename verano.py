@@ -64,9 +64,8 @@ class TECH_VERANO:
             data = await response.json()
             await self.update_cookies(response=response)
 
-            #_LOGGER.debug("Tech API GET response: %s", data)
-            cookies = self.session.cookie_jar._cookies
-            print(cookies)
+            _LOGGER.debug("Tech API GET request headers: %s", str(response.request_info.headers))
+            _LOGGER.debug("Tech API GET response headers: %s", str(response.headers))
 
             return data
         
