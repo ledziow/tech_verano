@@ -90,6 +90,8 @@ class TECH_VERANO:
             await self.update_cookies(response=response)
             
             _LOGGER.debug("Tech API POST response: %s", data)
+            _LOGGER.debug("Tech API POST request headers: %s", str(response.request_info.headers))
+            _LOGGER.debug("Tech API POST response headers: %s", str(response.headers))
 
             return data
         
