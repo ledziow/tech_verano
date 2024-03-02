@@ -111,6 +111,9 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._attr_preset_mode = PRESET_SCHEDULE_WEEKLY
 
 
+        self.hvac_mode = HVACMode.AUTO
+
+
     def update_properties(self, module_data):
         """ Upadate device properties.
         """
