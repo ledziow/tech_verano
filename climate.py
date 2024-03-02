@@ -209,7 +209,8 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         _LOGGER.debug("%s [%s] : Setting temp to %s", self._name, self._id, temperature)
         if temperature:
             self._temperature = temperature
-            await self._api.set_const_temp(self._udid, self._id, temperature)
+            r = await self._api.set_const_temp( self._udid, self._id, temperature)
+            _LOGGER.debug("%s [%s] : Setting temp to %s, results: %s.", self._name, self._id, temperature, r)
 
 
     async def async_set_hvac_mode(self, hvac_mode):

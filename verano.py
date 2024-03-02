@@ -355,7 +355,7 @@ class TECH_VERANO:
         return self.zones[zone_id]
     
     
-    async def set_const_temp(self, module_udid, target_temp):
+    async def set_const_temp(self, module_udid, selectedModuleIndex, target_temp):
         """Sets constant temperature.
         
         Parameters:
@@ -372,7 +372,7 @@ class TECH_VERANO:
             data = [{
                 "ido":139,
                 "params":int(target_temp  * 10),
-                "module_index":0
+                "module_index":selectedModuleIndex
             }]
             headers = self.headers
             headers = {
