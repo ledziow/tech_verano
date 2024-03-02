@@ -40,6 +40,26 @@ SUPPORT_FLAGS = (
     | ClimateEntityFeature.FAN_MODE
 )
 
+PRESET_SCHEDULE1 = "schedule1"
+PRESET_SCHEDULE2 = "schedule2"
+PRESET_SCHEDULE3 = "schedule3"
+PRESET_SCHEDULE4 = "schedule4"
+PRESET_SCHEDULE_WEEKLY = "schedule_weekly"
+PRESET_COMFORT = "comfort"
+PRESET_ECO = "eco"
+PRESET_PROTECTION = "protection"
+
+THERM_MODES = (
+    PRESET_SCHEDULE1,
+    PRESET_SCHEDULE2,
+    PRESET_SCHEDULE3,
+    PRESET_SCHEDULE4,
+    PRESET_SCHEDULE_WEEKLY,
+    PRESET_COMFORT,
+    PRESET_ECO,
+    PRESET_PROTECTION
+    )
+
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up entry."""
@@ -90,6 +110,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._attr_target_temperature_step = 0.1
         self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_fan_modes = FAN_AUTO
+        self._attr_preset_modes = PRESET_SCHEDULE_WEEKLY
 
 
     def update_properties(self, module_data):
