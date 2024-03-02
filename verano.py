@@ -95,12 +95,11 @@ class TECH_VERANO:
         
     
     async def update_cookies(self, response: aiohttp.ClientResponse):
-
-        from charset_normalizer import detect
+        
         
         _LOGGER.debug("Updating cookies for Tech API ...")
         for k in response.raw_headers:
-            encoding = detect(k[1])['encoding']
+            encoding = json.detect_encoding(k[1])
             _LOGGER.debug(f"Cookies encoding: {str(encoding)}")
             if "Set-Cookie" in k[0].decode():
                 if (set_session := k[1].decode("utf-8").replace("session=","")) is  not None:
