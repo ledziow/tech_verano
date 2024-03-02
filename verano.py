@@ -95,10 +95,12 @@ class TECH_VERANO:
     
     async def update_cookies(self, response: aiohttp.ClientResponse):
 
+        _LOGGER.debug("Updating cookies for Tech API ...")
         for k in response.raw_headers:
             if "Set-Cookie" in k[0].decode():
                 if (set_session := k[1].decode().replace("session=","")) is  not None:
                     self.session.cookie_jar.update_cookies({"session": set_session})
+                    _LOGGER.debug("Cookies for Tech API were updated!")
                     break
 
 

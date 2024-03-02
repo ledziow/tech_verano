@@ -61,16 +61,16 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     _LOGGER.debug("Setting up entry, module udid: " + config_entry.data["udid"])
 
-    api = hass.data[DOMAIN][config_entry.entry_id]
-    devices = await api.list_modules()
+    TECH_VERANO_OBJ = hass.data[DOMAIN][config_entry.entry_id]
+    devices = await TECH_VERANO_OBJ.list_modules()
 
-    _LOGGER.debug("API: " + str(api))
+    _LOGGER.debug("TECH_VERANO_OBJ: " + str(TECH_VERANO_OBJ.session))
 
     async_add_entities(
         [
             TECHVERANOThermostat(
                 device,
-                api,
+                TECH_VERANO_OBJ,
                 config_entry,
             )
             for device in devices
@@ -83,13 +83,13 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
     """Representation of a Tech-Verano climate."""
 
 
-    def __init__(self, device, api, config):
+    def __init__(self, device, TECH_VERANO_OBJ, config):
         """Initialize the Tech-Verano device."""
 
         _LOGGER.debug("Init Tech-Verano Thermostat...")
         self._config = config
         self._attr_unique_id = config.entry_id
-        self._api = api
+        self._TECH_VERANO_OBJ = TECH_VERANO_OBJ
         self._name = device["name"]
         self._id = device["id"]
         self._udid = device["udid"]
@@ -225,9 +225,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         """Call by the Tech device callback to update state."""
         
         _LOGGER.debug("Updating Tech VERANO: %s, udid: %s, id: %s", self._name, self._udid, self._id)
-
-        module_data = await self._api.get_module_tiles(self._udid)
-        #await self._api.get_zone(self._config_entry.data["udid"], self._id)
+        module_data = await self._TECH_VERANO_OBJ.get_module_tiles(self._udid)
         self.update_properties(module_data)
 
     @property
@@ -252,7 +250,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         _LOGGER.debug("%s [%s] : Setting temp to %s", self._name, self._id, temperature)
         if temperature:
             self._temperature = temperature
-            r = await self._api.set_const_temp( self._udid, self._id, temperature)
+            r = await self._TECH_VERANO_OBJ.set_const_temp( self._udid, self._id, temperature)
             _LOGGER.debug("%s [%s] : Setting temp to %s, results: %s.", self._name, self._id, temperature, r)
 
 
