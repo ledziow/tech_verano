@@ -152,7 +152,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
     @property
     def supported_features(self):
         """Return the list of supported features."""
-        return ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
+        return ClimateEntityFeature.TARGET_TEMPERATURE
 
     @property
     def hvac_mode(self):
