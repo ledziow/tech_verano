@@ -5,27 +5,15 @@ from typing import List, Optional
 from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.components.climate.const import (
-    DEFAULT_MAX_TEMP,
-    DEFAULT_MIN_TEMP,
-    ATTR_HVAC_MODE,
-    ATTR_FAN_MODE,
-    ATTR_SWING_MODE,
-    ATTR_CURRENT_TEMPERATURE,
-    ATTR_CURRENT_HUMIDITY,
     FAN_AUTO,
     FAN_LOW,
     FAN_MEDIUM,
     FAN_HIGH,
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
     HVACMode,
     HVACAction
 )
 from homeassistant.const import (
     ATTR_TEMPERATURE,
-    STATE_UNKNOWN,
-    STATE_UNAVAILABLE,
-    STATE_ON,
     UnitOfTemperature
 )
 from .const import DOMAIN
@@ -76,6 +64,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     api = hass.data[DOMAIN][config_entry.entry_id]
     devices = await api.list_modules()
 
+    _LOGGER.debug("API: " + str(api))
+
     async_add_entities(
         [
             TECHVERANOThermostat(
@@ -98,7 +88,6 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
         _LOGGER.debug("Init Tech-Verano Thermostat...")
         self._config = config
-        #self._attr_unique_id = config.data["udid"]
         self._attr_unique_id = config.entry_id
         self._api = api
         self._name = device["name"]
@@ -107,15 +96,17 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._ver = device["version"]
 
         self._attr_hvac_action = HVACAction.IDLE
+        self._attr_hvac_mode = HVACMode.AUTO
+
         self._target_temp = 21
         self._current_temp = None
         self._attr_target_temperature_high = 22
         self._attr_target_temperature_low = 18
         self._attr_min_temp = 5
-        self._attr_hvac_mode = HVACMode.AUTO
         self._attr_max_temp = 30
         self._attr_target_temperature_step = 0.1
         self._attr_temperature_unit = UnitOfTemperature.CELSIUS
+        
         self._attr_fan_mode = FAN_AUTO
         self._attr_preset_mode = PRESET_SCHEDULE_WEEKLY
 
