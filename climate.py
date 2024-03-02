@@ -222,6 +222,14 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         Need to be a subset of FAN_MODES.
         """
         return FAN_MODES
+    
+    @property
+    def preset_modes(self):
+        """Return the list of available THERM operation modes.
+
+        Need to be a subset of THERM_MODES.
+        """
+        return THERM_MODES
 
     async def async_update(self):
         """Call by the Tech device callback to update state."""
