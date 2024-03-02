@@ -66,7 +66,8 @@ class TECH_VERANO:
 
             #_LOGGER.debug("Tech API GET response: %s", data)
             cookies = self.session.cookie_jar._cookies
-            _LOGGER.debug("Sending GET request to Tech API: " + url + ", cookies: " + cookies)
+            for c in cookies:
+                _LOGGER.debug("Sending GET request to Tech API: " + url + ", cookies: " + c)
 
             return data
         
