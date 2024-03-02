@@ -82,6 +82,8 @@ class TECH_VERANO:
         _LOGGER.debug("Sending POST request to Tech API: " + url)
 
         async with self.session.post(url, data=post_data, headers=headers) as response:
+            _LOGGER.debug("Tech API POST request headers: %s", str(response.request_info.headers))
+            _LOGGER.debug("Tech API POST response headers: %s", str(response.headers))
             if response.status != 200:
                 _LOGGER.warning("Invalid response from Tech API: %s", response.status)
                 raise TechError(response.status, await response.text())
@@ -90,8 +92,7 @@ class TECH_VERANO:
             await self.update_cookies(response=response)
             
             _LOGGER.debug("Tech API POST response: %s", data)
-            _LOGGER.debug("Tech API POST request headers: %s", str(response.request_info.headers))
-            _LOGGER.debug("Tech API POST response headers: %s", str(response.headers))
+            
 
             return data
         
