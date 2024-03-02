@@ -102,7 +102,7 @@ class TECH_VERANO:
             encoding = json.detect_encoding(k[1])
             _LOGGER.debug(f"Cookies encoding: {str(encoding)}")
             if "Set-Cookie" in k[0].decode():
-                if (set_session := k[1].decode("utf-8").replace("session=","").replace("\\073",";").replace("\\054",',')) is  not None:
+                if (set_session := k[1].decode("utf-8").replace("session=","").replace("\\\\073",";").replace("\\\\054",',')) is  not None:
                     self.session.cookie_jar.update_cookies({"session": set_session})
                     _LOGGER.debug("Cookies for Tech API were updated!")
                     break
