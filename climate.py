@@ -32,6 +32,14 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+SUPPORT_FLAGS = (
+    ClimateEntityFeature.TARGET_TEMPERATURE
+    | ClimateEntityFeature.PRESET_MODE
+    | ClimateEntityFeature.TURN_OFF
+    | ClimateEntityFeature.TURN_ON
+    | ClimateEntityFeature.FAN_MODE
+)
+
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up entry."""
@@ -152,7 +160,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
     @property
     def supported_features(self):
         """Return the list of supported features."""
-        return ClimateEntityFeature.TARGET_TEMPERATURE
+        return SUPPORT_FLAGS
 
     @property
     def hvac_mode(self):
