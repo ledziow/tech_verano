@@ -148,8 +148,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                             _LOGGER.debug(f"Set current_temp: {i[1]}")
                             continue
                         if "Set temp." in i:
-                            self._attr_target_temperature = i[1]
-                            self._temperature = i[1]
+                            self._target_temp = i[1]
                             _LOGGER.debug(f"Set target_temp: {i[1]}")
                             continue
                 # Fan speed        
