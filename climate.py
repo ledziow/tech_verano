@@ -60,6 +60,13 @@ THERM_MODES = (
     PRESET_PROTECTION
     )
 
+FAN_MODES = (
+    FAN_AUTO,
+    FAN_LOW,
+    FAN_MEDIUM,
+    FAN_HIGH
+)
+
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up entry."""
@@ -207,6 +214,14 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         Need to be one of CURRENT_HVAC_*.
         """
         return self._attr_hvac_action
+    
+    @property
+    def fan_modes(self):
+        """Return the list of available fan operation modes.
+
+        Need to be a subset of FAN_MODES.
+        """
+        return FAN_MODES
 
     async def async_update(self):
         """Call by the Tech device callback to update state."""
