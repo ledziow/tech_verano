@@ -121,7 +121,6 @@ class TECH_VERANO:
                     cookie_set[c_row[0]]['domain'] = 'emodul.eu'
 
                     if len(cookie_set) > 0:
-                        self.session.cookie_jar.clear()
                         self.session.cookie_jar.update_cookies(cookie_set)
                         _LOGGER.debug("Cookies for Tech API were updated!")
 

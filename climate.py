@@ -158,7 +158,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                 if (profile_data := module_data.get(54)) is not None:
                     for i in profile_data:
                         if "Profile" in i:
-                            if "schedule" in i[1]:
+                            if "Weekly schedule" in i[1]:
                                 self._attr_hvac_mode = HVACMode.AUTO
                             continue
 
