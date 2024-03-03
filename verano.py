@@ -93,45 +93,22 @@ class TECH_VERANO:
 
             return data
         
-    
+            
     async def update_cookies(self, response: aiohttp.ClientResponse):
-        
-        _LOGGER.debug("Updating cookies for Tech API ...")
-
-        try:
-            for k in response.raw_headers:
-
-                if "Set-Cookie" in k[0].decode():
-                    cookie_elements = [x.strip() for x in k[1].decode("utf-8").split(';')]
-                    set_session = "; ".join(cookie_elements)
-                    _LOGGER.debug(f"Cookie: {set_session}")
-                    self.session.cookie_jar.update_cookies({"session": set_session.replace("session=","")})
-                    _LOGGER.debug("Cookies for Tech API were updated!")
-                    break
-
-        except Exception as e:
-            _LOGGER.error(f"Parsing 'Set-cookies' cookie for Tech API failed, Error: {e}")
-
-    
-    """ async def update_cookies(self, response: aiohttp.ClientResponse):
         
         from http.cookies import SimpleCookie, Morsel
 
-        cookie_set = Morsel()
+        cookie_set = SimpleCookie()
         _LOGGER.debug("Updating cookies for Tech API ...")
         
         try:
             for k in response.raw_headers:
                 if "Set-Cookie" in k[0].decode():
                     cookie_elements = [x.strip() for x in k[1].decode("utf-8").split(';')]
-                    a = "; ".join(cookie_elements)
 
-                    print(a)
-
-
-
-                    print(cookie_elements)
+                    # Get name of cookie from first row
                     c_row = [x.strip() for x in cookie_elements[0].split('=')]
+
                     cookie_set[c_row[0]] = c_row[1]
 
                     for i in cookie_elements:
@@ -141,16 +118,14 @@ class TECH_VERANO:
                                 cookie_set[c_row[0]][c[0]] = c[1]
                     cookie_set[c_row[0]]['HttpOnly'] = True
                     cookie_set[c_row[0]]['secure'] = True
-
-                    #print(cookie_set.)
+                    cookie_set[c_row[0]]['domain'] = 'emodul.eu'
 
                     if len(cookie_set) > 0:
                         self.session.cookie_jar.update_cookies(cookie_set)
                         _LOGGER.debug("Cookies for Tech API were updated!")
-                        break
 
         except Exception as e:
-            _LOGGER.error(f"Parsing 'Set-cookies' cookie for Tech API failed, Error: {e}") """
+            _LOGGER.error(f"Parsing 'Set-cookies' cookie for Tech API failed, Error: {e}")
 
 
     async def authenticate(self, username: str, password: str):
