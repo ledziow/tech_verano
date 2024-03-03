@@ -154,6 +154,13 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                             else:
                                 self._attr_hvac_action = HVACAction.HEATING
                             continue
+                # Profile
+                if (profile_data := module_data.get(54)) is not None:
+                    for i in profile_data:
+                        if "Profile" in i:
+                            if "schedule" in i[1]:
+                                self._attr_hvac_mode = HVACMode.AUTO
+                            continue
 
             else:
                 _LOGGER.debug("No module data, No updates.")
