@@ -100,7 +100,7 @@ class TECH_VERANO:
 
         cookie_set = SimpleCookie()
         _LOGGER.debug("Updating cookies for Tech API ...")
-        
+
         try:
             for k in response.raw_headers:
                 if "Set-Cookie" in k[0].decode():
@@ -121,12 +121,13 @@ class TECH_VERANO:
                     cookie_set[c_row[0]]['domain'] = 'emodul.eu'
 
                     if len(cookie_set) > 0:
+                        self.session.cookie_jar.clear()
                         self.session.cookie_jar.update_cookies(cookie_set)
                         _LOGGER.debug("Cookies for Tech API were updated!")
 
         except Exception as e:
             _LOGGER.error(f"Parsing 'Set-cookies' cookie for Tech API failed, Error: {e}")
-
+        
 
     async def authenticate(self, username: str, password: str):
         """ Authetication
