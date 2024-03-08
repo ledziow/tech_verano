@@ -90,7 +90,6 @@ class TECH_VERANO:
             
             _LOGGER.debug("Tech API POST response: %s", data)
             
-
             return data
         
             
@@ -409,10 +408,12 @@ class TECH_VERANO:
             }
             _LOGGER.debug(f"Setting constant temperature {target_temp}")
             try:
+                #self.session.cookie_jar.clear()
                 result = await self.tech_post(request_path=path, post_data=json.dumps(data), headers=headers)
                 _LOGGER.debug(f"Setting constant temperature successed, results: {result}")
             except Exception as e:
                 _LOGGER.error(f"Setting constant temperature failed. Error: {e}")
+                raise TechError(401, "Unauthorized")
         else:
             raise TechError(401, "Unauthorized")
         

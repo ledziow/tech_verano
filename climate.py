@@ -93,6 +93,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._udid = device["udid"]
         self._ver = device["version"]
 
+        self.hvac_mode = HVACMode.AUTO
         self._attr_hvac_action = HVACAction.IDLE
         self._attr_hvac_mode = HVACMode.AUTO
 
@@ -160,6 +161,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                         if "Profile" in i:
                             if "Weekly schedule" in i[1]:
                                 self._attr_hvac_mode = HVACMode.AUTO
+                                self.hvac_mode = HVACMode.AUTO
                             continue
 
             else:
@@ -243,18 +245,25 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
     @property
     def target_temperature(self):
-        """Return the temperature we try to reach."""
+        """Return the temperature we try to xreach."""
         return self._target_temp
     
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperatures."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
-        _LOGGER.debug("%s [%s] : Setting temp to %s", self._name, self._id, temperature)
-        if temperature:
-            self._temperature = temperature
-            r = await self._TECH_VERANO_OBJ.set_const_temp( self._udid, self._id, temperature)
-            _LOGGER.debug("%s [%s] : Setting temp to %s, results: %s.", self._name, self._id, temperature, r)
+        _LOGGER.info("%s [%s] : Setting temp to %s", self._name, self._id, temperature)
+        try:
+            if temperature:
+                self._temperature = temperature
+                r = await self._TECH_VERANO_OBJ.set_const_temp(self._udid, self._id, temperature)
+                _LOGGER.info("%s [%s] : Setting temp to %s, results: %s.", self._name, self._id, temperature, r)
+        except Exception as e:
+            _LOGGER.error("%s [%s] : Setting temp to %s failed. Error: %s.", self._name, self._id, temperature, e)
+            if e.status_code == 401:
+                _LOGGER.debug("Starting re-auth process.")
+                r = await self._TECH_VERANO_OBJ.authenticate(self._config["data"]["username"],self._config["data"]["pass"])
+                r = await self.async_set_temperature(self, **kwargs)
 
 
     async def async_set_hvac_mode(self, hvac_mode):

@@ -44,7 +44,16 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     module = modules[0]
 
     # Return info that you want to store in the config entry.
-    return {"user_id": api.user_id, "token": api.token, "udid": module["udid"], "version": module["version"], "selectedModuleIndex": api.selectedModuleIndex, "name": module["name"]}
+    return {
+        "user_id": api.user_id,
+        "username": data[CONF_USERNAME],
+        "pass": data[CONF_PASSWORD],
+        "token": api.token,
+        "udid": module["udid"],
+        "version": module["version"],
+        "selectedModuleIndex": api.selectedModuleIndex,
+        "name": module["name"]
+    }
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
