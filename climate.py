@@ -93,7 +93,6 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._udid = device["udid"]
         self._ver = device["version"]
 
-        self.hvac_mode = HVACMode.AUTO
         self._attr_hvac_action = HVACAction.IDLE
         self._attr_hvac_mode = HVACMode.AUTO
 
@@ -161,7 +160,6 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                         if "Profile" in i:
                             if "Weekly schedule" in i[1]:
                                 self._attr_hvac_mode = HVACMode.AUTO
-                                self.hvac_mode = HVACMode.AUTO
                             continue
 
             else:
