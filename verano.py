@@ -198,6 +198,7 @@ class TECH_VERANO:
         """ Pull list of language strings
         """
 
+        result = None
         try:
             _LOGGER.debug(f"Pulling language strings ...")
             
