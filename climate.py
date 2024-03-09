@@ -260,6 +260,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
             _LOGGER.error("%s [%s] : Setting temp to %s failed. Error: %s.", self._name, self._id, temperature, e)
             if e.status_code == 401:
                 _LOGGER.debug("Starting re-auth process.")
+                _LOGGER.debug("Config: %s",self._config)
                 r = await self._TECH_VERANO_OBJ.authenticate(self._config["data"]["username"],self._config["data"]["pass"])
                 r = await self.async_set_temperature(self, **kwargs)
 
