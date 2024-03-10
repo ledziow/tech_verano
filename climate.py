@@ -92,6 +92,8 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         self._id = device["id"]
         self._udid = device["udid"]
         self._ver = device["version"]
+        self._api_username = device["username"]
+        self._api_pass = device["pass"]
 
         self._attr_hvac_action = HVACAction.IDLE
         self._attr_hvac_mode = HVACMode.AUTO
@@ -260,8 +262,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
             _LOGGER.error("%s [%s] : Setting temp to %s failed. Error: %s.", self._name, self._id, temperature, e)
             if e.status_code == 401:
                 _LOGGER.debug("Starting re-auth process.")
-                _LOGGER.debug("Config: %s",self._config)
-                r = await self._TECH_VERANO_OBJ.authenticate(self._config["data"]["username"],self._config["data"]["pass"])
+                r = await self._TECH_VERANO_OBJ.authenticate(self._api_username,self._api_pass)
                 r = await self.async_set_temperature(self, **kwargs)
 
 
