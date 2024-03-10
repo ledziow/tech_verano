@@ -148,8 +148,6 @@ class TECH_VERANO:
         _LOGGER.info("TECH_VERANO authentication.")
 
         try:
-            await self.language_strings()
-
             _LOGGER.info(f"TECH_VERANO auth at login page: {path}")
             result = await self.tech_post(request_path=path, post_data=json.dumps(post_data), headers=headers)
             self.authenticated = result["authenticated"]
@@ -315,7 +313,8 @@ class TECH_VERANO:
 
             if self.last_update is None or now > self.last_update + self.update_interval:
 
-                _LOGGER.debug(f"Updating module {module_udid} tiles cache ...")    
+                _LOGGER.debug(f"Updating module {module_udid} tiles cache ...")
+                await self.language_strings()
                 result = await self.get_module_data(module_udid)
                 if self.language_strings_dict is None:
                     raise TechError(0, "No language_strings_dict")
