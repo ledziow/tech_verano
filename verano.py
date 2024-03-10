@@ -43,7 +43,7 @@ class TECH_VERANO:
         self.tiles = {}
         self.selectedModuleIndex = None
         self.selectedModuleHash = None
-        self.language_strings_dict = {}
+        self.language_strings_dict = None
 
 
     async def tech_get(self, request_path: str, headers: dict):
@@ -148,6 +148,8 @@ class TECH_VERANO:
         _LOGGER.info("TECH_VERANO authentication.")
 
         try:
+            await self.language_strings()
+
             _LOGGER.info(f"TECH_VERANO auth at login page: {path}")
             result = await self.tech_post(request_path=path, post_data=json.dumps(post_data), headers=headers)
             self.authenticated = result["authenticated"]
@@ -198,7 +200,6 @@ class TECH_VERANO:
         """ Pull list of language strings
         """
 
-        result = None
         try:
             _LOGGER.debug(f"Pulling language strings ...")
             
@@ -210,11 +211,12 @@ class TECH_VERANO:
             result = await self.tech_get(request_path=path, headers=headers)
             if result:
                 self.language_strings_dict = result["data"]
+                return(result["data"])
 
         except Exception as e:
             _LOGGER.error(f"Pulling language strings failed. Error: {e}")
         
-        return result
+        return None
     
 
     async def list_modules(self):
@@ -315,6 +317,8 @@ class TECH_VERANO:
 
                 _LOGGER.debug(f"Updating module {module_udid} tiles cache ...")    
                 result = await self.get_module_data(module_udid)
+                if self.language_strings_dict is None:
+                    raise TechError(0, "No language_strings_dict")
                 await self.language_strings()
                 tiles = result["tiles"]
 
