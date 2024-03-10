@@ -85,6 +85,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         """Initialize the Tech-Verano device."""
 
         _LOGGER.debug("Init Tech-Verano Thermostat...")
+        _LOGGER.debug("Device: %s", str(device))
         self._config = config
         self._attr_unique_id = config.entry_id
         self._TECH_VERANO_OBJ = TECH_VERANO_OBJ
