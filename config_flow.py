@@ -46,7 +46,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     # Return info that you want to store in the config entry.
     return {
         "user_id": api.user_id,
-        "username": data[CONF_USERNAME],
+        "user": data[CONF_USERNAME],
         "pass": data[CONF_PASSWORD],
         "token": api.token,
         "udid": module["udid"],
