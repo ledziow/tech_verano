@@ -31,7 +31,6 @@ SUPPORT_FLAGS = (
 PRESET_SCHEDULE1 = "schedule1"
 PRESET_SCHEDULE2 = "schedule2"
 PRESET_SCHEDULE3 = "schedule3"
-PRESET_SCHEDULE4 = "schedule4"
 PRESET_SCHEDULE_WEEKLY = "schedule_weekly"
 PRESET_COMFORT = "comfort"
 PRESET_ECO = "eco"
@@ -41,7 +40,6 @@ THERM_MODES = (
     PRESET_SCHEDULE1,
     PRESET_SCHEDULE2,
     PRESET_SCHEDULE3,
-    PRESET_SCHEDULE4,
     PRESET_SCHEDULE_WEEKLY,
     PRESET_COMFORT,
     PRESET_ECO,
@@ -108,6 +106,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         
         self._attr_fan_mode = FAN_AUTO
         self._attr_preset_mode = PRESET_SCHEDULE_WEEKLY
+        self._attr_preset_modes = THERM_MODES
 
 
     def update_properties(self, module_data):
@@ -273,4 +272,28 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
             await self._api.set_zone(self._config_entry.data["udid"], self._id, False)
         elif hvac_mode == HVAC_MODE_HEAT:
             await self._api.set_zone(self._config_entry.data["udid"], self._id, True) """
+        
+    
+    async def async_set_preset_mode(self, preset_mode: str):
+        """Set new preset mode."""
+
+        _LOGGER.debug("%s: Setting present mode to %s", self._name, preset_mode)
+        
+        if preset_mode not in (self._attr_preset_modes or []):
+            raise ValueError(
+                f"Got unsupported preset_mode {preset_mode}. Must be one of {self._attr_preset_modes}"
+            )
+        if preset_mode == self._attr_preset_mode:
+            return
+        else:
+            try:
+                self._attr_preset_mode = preset_mode
+                r = await self._TECH_VERANO_OBJ.set_preset_mode(self._udid, self._id, preset_mode)
+                _LOGGER.info("%s [%s] : Setting present mode to %s, results: %s.", self._name, self._id, preset_mode, r)
+            except Exception as e:
+                _LOGGER.error("%s [%s] : Setting present mode to %s failed. Error: %s.", self._name, self._id, preset_mode, e)
+                if e.status_code == 401:
+                    _LOGGER.debug("Starting re-auth process.")
+                    r = await self._TECH_VERANO_OBJ.authenticate(self._config.data["user"],self._config.data["pass"])
+                    r = await self.async_set_preset_mode(self, preset_mode)
 

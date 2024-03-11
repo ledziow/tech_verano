@@ -317,8 +317,7 @@ class TECH_VERANO:
                 await self.language_strings()
                 result = await self.get_module_data(module_udid)
                 if self.language_strings_dict is None:
-                    raise TechError(0, "No language_strings_dict")
-                await self.language_strings()
+                    await self.language_strings()
                 tiles = result["tiles"]
 
                 temp_tiles = {}
@@ -418,6 +417,60 @@ class TECH_VERANO:
             except Exception as e:
                 _LOGGER.error(f"Setting constant temperature failed. Error: {e}")
                 raise TechError(401, "Unauthorized")
+        else:
+            raise TechError(401, "Unauthorized")
+        
+        return result
+    
+    
+    async def set_preset_mode(self, module_udid, selectedModuleIndex, preset_mode):
+        """Sets constant temperature.
+        
+        Parameters:
+        module_udid (string): The Tech module udid.
+        preset_mode (string): The target PRESENT mode to be set.
+
+        Returns:
+        JSON object with the result.
+        """
+        result = None
+        _LOGGER.debug("Setting PRESENT mode ...")
+
+        PRESENT_MODES_VALs = {
+            "eco": 0,
+            "comfort": 1,
+            "protection": 2,
+            "schedule1": 3,
+            "schedule2": 4,
+            "schedule3": 5,
+            "schedule_weekly": 6
+        }
+
+        if self.authenticated:
+
+            if preset_mode in PRESENT_MODES_VALs:
+
+                path = "frontend/send_control_data"
+                data = [{
+                    "ido":100,
+                    "params":PRESENT_MODES_VALs[preset_mode],
+                    "module_index":selectedModuleIndex
+                }]
+                headers = self.headers
+                headers = {
+                    "Referer": f"https://emodul.eu/web/{module_udid}/control",
+                    "Content-Type": "application/json",
+                    "Accept": "application/json, text/plain, */*",
+                    'Authorization': f"Bearer {self.token}"
+                }
+                _LOGGER.debug(f"Setting PRESENT mode {preset_mode}")
+                try:
+                    #self.session.cookie_jar.clear()
+                    result = await self.tech_post(request_path=path, post_data=json.dumps(data), headers=headers)
+                    _LOGGER.debug(f"Setting PRESENT mode successed, results: {result}")
+                except Exception as e:
+                    _LOGGER.error(f"Setting PRESENT mode failed. Error: {e}")
+                    raise TechError(401, "Unauthorized")
         else:
             raise TechError(401, "Unauthorized")
         
