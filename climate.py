@@ -249,6 +249,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperatures."""
+        _LOGGER.debug("%s [%s] : kwargs %s", self._name, self._id, str(kwargs))
         temperature = kwargs.get(ATTR_TEMPERATURE)
         _LOGGER.info("%s [%s] : Setting temp to %s", self._name, self._id, temperature)
         try:
@@ -261,7 +262,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
             if e.status_code == 401:
                 _LOGGER.debug("Starting re-auth process.")
                 r = await self._TECH_VERANO_OBJ.authenticate(self._config.data["user"],self._config.data["pass"])
-                r = await self.async_set_temperature(self, **kwargs)
+                r = await self.async_set_temperature(kwargs)
 
 
     async def async_set_hvac_mode(self, hvac_mode):
