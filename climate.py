@@ -9,6 +9,7 @@ from homeassistant.components.climate.const import (
     FAN_LOW,
     FAN_MEDIUM,
     FAN_HIGH,
+    FAN_OFF,
     HVACMode,
     HVACAction
 )
@@ -50,7 +51,8 @@ FAN_MODES = (
     FAN_AUTO,
     FAN_LOW,
     FAN_MEDIUM,
-    FAN_HIGH
+    FAN_HIGH,
+    FAN_OFF
 )
 
 
@@ -262,7 +264,7 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
             if e.status_code == 401:
                 _LOGGER.debug("Starting re-auth process.")
                 r = await self._TECH_VERANO_OBJ.authenticate(self._config.data["user"],self._config.data["pass"])
-                r = await self.async_set_temperature(kwargs)
+                r = await self._TECH_VERANO_OBJ.set_const_temp(self._udid, self._id, temperature)
 
 
     async def async_set_hvac_mode(self, hvac_mode):
