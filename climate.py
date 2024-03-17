@@ -21,6 +21,8 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+MAX_RETRY_SET_COUNT = 3
+
 SUPPORT_FLAGS = (
     ClimateEntityFeature.TARGET_TEMPERATURE
     | ClimateEntityFeature.PRESET_MODE
@@ -163,7 +165,6 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                             if "Weekly schedule" in i[1]:
                                 self._attr_hvac_mode = HVACMode.AUTO
                             continue
-
             else:
                 _LOGGER.debug("No module data, No updates.")
 
@@ -254,17 +255,28 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
         _LOGGER.debug("%s [%s] : kwargs %s", self._name, self._id, str(kwargs))
         temperature = kwargs.get(ATTR_TEMPERATURE)
         _LOGGER.info("%s [%s] : Setting temp to %s", self._name, self._id, temperature)
-        try:
-            if temperature:
-                self._temperature = temperature
-                r = await self._TECH_VERANO_OBJ.set_const_temp(self._udid, self._id, temperature)
-                _LOGGER.info("%s [%s] : Setting temp to %s, results: %s.", self._name, self._id, temperature, r)
-        except Exception as e:
-            _LOGGER.error("%s [%s] : Setting temp to %s failed. Error: %s.", self._name, self._id, temperature, e)
-            if e.status_code == 401:
-                _LOGGER.debug("Starting re-auth process.")
-                r = await self._TECH_VERANO_OBJ.authenticate(self._config.data["user"],self._config.data["pass"])
-                r = await self._TECH_VERANO_OBJ.set_const_temp(self._udid, self._id, temperature)
+
+        count = 0
+
+        while (True):
+            try:
+                count+=1
+                if temperature:
+                    self._temperature = temperature
+                    r = await self._TECH_VERANO_OBJ.set_const_temp(self._udid, self._id, temperature)
+                    _LOGGER.info("%s [%s] : Setting temp to %s, results: %s.", self._name, self._id, temperature, r)
+                    break
+
+            except Exception as e:
+                if count > 3: 
+                    _LOGGER.error("%s [%s] : Setting temp to %s failed. Error: %s.", self._name, self._id, temperature, e)
+                    break
+                else:
+                    _LOGGER.warning("%s [%s] : Setting temp to %s failed. Trying one more time, Error: %s.", self._name, self._id, temperature, e)
+                    if e.status_code == 401:
+                        _LOGGER.debug("Starting re-auth process.")
+                        r = await self._TECH_VERANO_OBJ.authenticate(self._config.data["user"],self._config.data["pass"])
+                        #r = await self._TECH_VERANO_OBJ.set_const_temp(self._udid, self._id, temperature)
 
 
     async def async_set_hvac_mode(self, hvac_mode):
@@ -298,5 +310,29 @@ class TECHVERANOThermostat(ClimateEntity, RestoreEntity):
                 if e.status_code == 401:
                     _LOGGER.debug("Starting re-auth process.")
                     r = await self._TECH_VERANO_OBJ.authenticate(self._config.data["user"],self._config.data["pass"])
-                    r = await self.async_set_preset_mode(self, preset_mode)
+                    r = await self._TECH_VERANO_OBJ.set_preset_mode(self._udid, self._id, preset_mode)
+
+    
+    async def async_set_fan_mode(self, fan_mode: str):
+        """Set new fan mode."""
+
+        _LOGGER.debug("%s: Setting fan mode to %s", self._name, fan_mode)
+        
+        if fan_mode not in (self.fan_modes or []):
+            raise ValueError(
+                f"Got unsupported preset_mode {fan_mode}. Must be one of {self.fan_modes}"
+            )
+        if fan_mode == self._attr_fan_mode:
+            return
+        else:
+            try:
+                self._attr_fan_mode = fan_mode
+                r = await self._TECH_VERANO_OBJ.set_fan_mode(self._udid, self._id, fan_mode)
+                _LOGGER.info("%s [%s] : Setting fan mode to %s, results: %s.", self._name, self._id, fan_mode, r)
+            except Exception as e:
+                _LOGGER.error("%s [%s] : Setting fan mode to %s failed. Error: %s.", self._name, self._id, fan_mode, e)
+                if e.status_code == 401:
+                    _LOGGER.debug("Starting re-auth process.")
+                    r = await self._TECH_VERANO_OBJ.authenticate(self._config.data["user"],self._config.data["pass"])
+                    r = await self._TECH_VERANO_OBJ.set_fan_mode(self._udid, self._id, fan_mode)
 

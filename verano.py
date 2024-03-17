@@ -475,6 +475,76 @@ class TECH_VERANO:
             raise TechError(401, "Unauthorized")
         
         return result
+    
+
+    async def set_fan_mode(self, module_udid, selectedModuleIndex, fan_mode):
+        """Sets constant temperature.
+        
+        Parameters:
+        module_udid (string): The Tech module udid.
+        fan_mode (string): The target FAN mode to be set.
+
+        Returns:
+        JSON object with the result.
+        """
+        result = None
+        _LOGGER.debug("Setting Fan mode ...")
+
+        if self.authenticated:
+
+            path = "frontend/send_control_data"
+            data = []
+            FAN_MODE_SET = {
+                "ido":140,
+                "params":3,
+                "module_index":selectedModuleIndex
+            }
+            FAN_SPEED_SET = {
+                "ido":141,
+                "params":0,
+                "module_index":selectedModuleIndex
+            }
+            headers = self.headers
+            headers = {
+                "Referer": f"https://emodul.eu/web/{module_udid}/control",
+                "Content-Type": "application/json",
+                "Accept": "application/json, text/plain, */*",
+                'Authorization': f"Bearer {self.token}"
+            }
+
+            if fan_mode == "auto":
+                FAN_MODE_SET["params"] = 3
+                data.append(FAN_MODE_SET)
+            elif fan_mode == "off":
+                FAN_MODE_SET["params"] = 0
+                data.append(FAN_MODE_SET)
+            elif fan_mode == "low":
+                FAN_MODE_SET["params"] = 1
+                FAN_SPEED_SET["params"] = 0
+                data.append(FAN_SPEED_SET)
+                data.append(FAN_MODE_SET)
+            elif fan_mode == "medium":
+                FAN_MODE_SET["params"] = 1
+                FAN_SPEED_SET["params"] = 1
+                data.append(FAN_SPEED_SET)
+                data.append(FAN_MODE_SET)
+            elif fan_mode == "high":
+                FAN_MODE_SET["params"] = 1
+                FAN_SPEED_SET["params"] = 2
+                data.append(FAN_SPEED_SET)
+                data.append(FAN_MODE_SET)
+
+            _LOGGER.debug(f"Setting FAN_MODE mode {fan_mode}")
+            try:
+                result = await self.tech_post(request_path=path, post_data=json.dumps(data), headers=headers)
+                _LOGGER.debug(f"Setting FAN_MODE successed, results: {result}")
+            except Exception as e:
+                _LOGGER.error(f"Setting FAN_MODE mode failed. Error: {e}")
+                raise TechError(401, "Unauthorized")
+        else:
+            raise TechError(401, "Unauthorized")
+        
+        return result
 
 
     async def set_zone(self, module_udid, zone_id, on = True):
